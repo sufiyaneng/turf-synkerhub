@@ -2,6 +2,7 @@ import { Box, Flex, Image } from "@chakra-ui/react";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./Login";
+import Signup from "./Signup";
 
 const Auth: React.FC = () => {
   return(
@@ -9,6 +10,7 @@ const Auth: React.FC = () => {
         <Box width={{base:'100%', lg:'50%'}}>
               <Routes>
                   <Route path="login" element={<Login/>}/>
+                  <Route path="signup" element={<Signup/>}/>
                   <Route path="/" element={<Navigate to="login" />} />
               </Routes>
         </Box>
