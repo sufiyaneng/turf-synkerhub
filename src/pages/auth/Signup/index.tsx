@@ -19,8 +19,16 @@ const Signup: React.FC = () => {
     validationSchema:signupSchema,
     onSubmit:async (values) => {
       try{
-        await axios.post('/api/users',values);
-        naviagate('/auth/verify')
+        await axios.post('/api/signup',values);
+        toast({
+            title: 'Verify Email',
+            description: "The verification link is sent to your email.",
+            status: 'info',
+            duration: 9000,
+            isClosable: true,
+            
+          })
+        naviagate('/auth/login')
       }catch(err:any){
         toast({
           title: 'Signup Failed!',

@@ -3,6 +3,9 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup";
+import VerifyEmail from "./VerifyEmail";
+import ResetPassword from "./ResetPassword";
+import ForgotPassword from "./ForgotPassword";
 
 const Auth: React.FC = () => {
   return(
@@ -11,6 +14,9 @@ const Auth: React.FC = () => {
               <Routes>
                   <Route path="login" element={<Login/>}/>
                   <Route path="signup" element={<Signup/>}/>
+                  <Route path="verify/:userId/:verificationCode" element={<VerifyEmail/>}/>
+                  <Route path="forgot-password" element={<ForgotPassword/>}/>
+                  <Route path="/reset-password/:userId/:resetPassCode" element={<ResetPassword/>}/>
                   <Route path="/" element={<Navigate to="login" />} />
               </Routes>
         </Box>
