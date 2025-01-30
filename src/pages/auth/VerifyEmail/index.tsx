@@ -16,7 +16,7 @@ const VerifyEmail: React.FC = () => {
         userId,
         verificationCode,
       });
-      //toast
+      
       toast({
         title: 'Verification Succes',
         description: "The verification Succesfully.",
@@ -27,7 +27,7 @@ const VerifyEmail: React.FC = () => {
       })
       setTimeout(() => navigate("/auth/login"), 2000);
     } catch (err:any) {
-     //toast
+    
      toast({
         title: 'Varification Failed!',
         description: "Something went wrong!",
