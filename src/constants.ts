@@ -52,4 +52,15 @@ export const signupSchema = Yup.object({
     .oneOf([Yup.ref('password')], "Passwords must match")
   });
 
-  
+  export const createBookingSchema = Yup.object({
+    bookerName: Yup.string()
+      .required("Booker Name is required")
+      .min(3, "Booker Name must be at least 3 characters"),
+    slotDate: Yup.string()
+      .required("Slot Date is required"),
+    slotTime: Yup.string()
+      .required("Slot Time is required"),
+    amount: Yup.number()
+      .required("Amount Paid is required")
+      .min(0, "Amount Paid must be at least 0"),
+  });

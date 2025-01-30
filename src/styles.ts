@@ -156,4 +156,60 @@ export const Tile = styled(Link)`
   border: 1px solid #2961bc;
 `
 
+export const RadioWrapper = styled.label<{ selected: boolean }>`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  gap: 8px;
+  width: 23%;
+  border: 1px solid;
+  border-color: ${(props) => (props.selected ? "blue.500" : "gray.300")};
+  background-color: ${(props) => (props.selected ? "blue.500" : "gray.300")};
+  border-radius: 0.375rem; // equivalent to md in Tailwind
+  padding: 0.5rem;
+  text-align: center;
+  transition: border-color 0.3s, background-color 0.3s;
+
+  &:hover {
+    border-color: blue.400;
+  }
+
+  &._checked {
+    border-color: blue.500;
+    background-color: blue.50;
+  }
+`;
+
+export const HiddenRadio = styled.input.attrs({ type: "radio" })`
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+`;
+
+export const CustomRadio = styled.span`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+
+  ${HiddenRadio}:checked + & {
+    background-color: #007bff;
+    border: 2px solid #007bff;
+  }
+
+  ${HiddenRadio}:checked + &::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+  }
+`;
+
 export default theme;
