@@ -16,7 +16,9 @@ const Login: React.FC = () => {
       validationSchema: loginSchema,
       onSubmit: async (values) => {
         try {
-          await axios.post("/api/login", values);
+         const resp:any = await axios.post("/api/login", values);
+         console.log(resp,'Response')
+         localStorage.setItem('accessToken',resp?.data?.token?.accessToken || '')
           navigate('/dashboard')
         } catch (err: any) {
           toast({
@@ -75,7 +77,7 @@ const Login: React.FC = () => {
               </FormErrorMessage>
             </FormControl>
 
-            <Box>Forgot your password?<Link to='/auth/forgot-password'>...Reset Now</Link> </Box>
+            <Box>Forgot your password?<Link to='/auth/forgot-password' style={{ color: "blue", textDecoration: "underline" }}>...Reset Now</Link> </Box>
 
             <Button
               type="submit"
