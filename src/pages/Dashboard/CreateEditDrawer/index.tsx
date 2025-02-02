@@ -174,7 +174,7 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
                         <Input
                           name="slotDate"
                           type={"date"}
-                          placeholder="2hr"
+                          placeholder="Slot Date"
                           value={formik.values.slotDate}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
