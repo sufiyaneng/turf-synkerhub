@@ -64,3 +64,29 @@ export const signupSchema = Yup.object({
       .required("Amount Paid is required")
       .min(0, "Amount Paid must be at least 0"),
   });
+
+  export const createUserProfileUpdateSchema = Yup.object({
+    name:Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+  })
+
+  export const createTurfProfileUpdateSchema = Yup.object({
+    name:Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters"),
+    address: Yup.string()
+    .required("Address is required")
+    .min(5, "Address must be at least 5 characters"),
+
+  openAt: Yup.string()
+    .required("Opening time is required"),
+
+  closeAt: Yup.string()
+    .required("Closing time is required"),
+
+  daysOpen: Yup.array()
+    .of(Yup.string().oneOf(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]))
+    .min(1, "At least one day must be selected")
+    .required("Please select at least one day"),
+  })
