@@ -17,7 +17,6 @@ const Login: React.FC = () => {
       onSubmit: async (values) => {
         try {
          const resp:any = await axios.post("/api/login", values);
-         console.log(resp,'Response')
          localStorage.setItem('accessToken',resp?.data?.token?.accessToken || '')
           navigate('/dashboard')
         } catch (err: any) {

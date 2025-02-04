@@ -25,7 +25,6 @@ interface BookingTableProps {
 const BookingTable: React.FC<BookingTableProps> = ({ tabType }) => {
   const [list, setlist] = useState<any>([]);
 
-  console.log("list",list)
   const getAllBooking = async () => {
     try {
       const response = await axios.post(`/api/bookings`, {
