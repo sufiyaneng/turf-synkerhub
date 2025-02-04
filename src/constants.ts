@@ -85,8 +85,21 @@ export const signupSchema = Yup.object({
   closeAt: Yup.string()
     .required("Closing time is required"),
 
-  daysOpen: Yup.array()
-    .of(Yup.string().oneOf(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]))
-    .min(1, "At least one day must be selected")
-    .required("Please select at least one day"),
+  // daysOpen: Yup.array()
+  //   .of(Yup.string().oneOf(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]))
+  //   .min(1, "At least one day must be selected")
+  //   .required("Please select at least one day"),
   })
+
+  export const getDay = (dayNum:string) =>{
+    if(!dayNum) return '-'
+    if(dayNum === '1') return 'Mon';
+    if(dayNum === '2') return 'Tue';
+    if(dayNum === '3') return 'Wed';
+    if(dayNum === '4') return 'Thu';
+    if(dayNum === '5') return 'Fri';
+    if(dayNum === '6') return 'Sat';
+    if(dayNum === '7') return 'Sun';
+  }
+
+  export const days = ['1','2','3','4','5','6','7']

@@ -42,6 +42,7 @@ const UserProfile: React.FC = () => {
       if (file) formData.append("Image", file);
       try {
         await axios.put("/api/edituserprofile", formData);
+        fetchtUserData();
         toast({
           title: "Update",
           description: "udate successfully",
@@ -66,7 +67,6 @@ const UserProfile: React.FC = () => {
       formik.setFieldValue("name", userData.name);
     }
   }, [userData]);
-  
 
   const fetchtUserData = async () => {
     try {
@@ -87,7 +87,7 @@ const UserProfile: React.FC = () => {
     fetchtUserData();
   }, []);
 
-  console.log(userData)
+  console.log(userData);
 
   const handleFileChange = (e: any) => {
     const selectedFile = e.target.files[0];
@@ -101,7 +101,7 @@ const UserProfile: React.FC = () => {
   return (
     <Flex
       width="300px"
-      bg='#FFFFFF'
+      bg="#FFFFFF"
       p={5}
       flexDirection="column"
       justifyContent="center"
@@ -112,9 +112,7 @@ const UserProfile: React.FC = () => {
         <Image
           width="175px"
           height="175px"
-          src={ userData?.userImage ||
-            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-          }
+          src={userData?.userImage}
           alt="Green double couch with wooden legs"
           borderRadius="50%"
         />
@@ -163,10 +161,7 @@ const UserProfile: React.FC = () => {
                       <Image
                         width="175px"
                         height="175px"
-                        src={
-                          preview ||
-                          "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                        }
+                        src={preview || userData?.userImage}
                         alt="Green double couch with wooden legs"
                         borderRadius="50%"
                       />
@@ -184,7 +179,9 @@ const UserProfile: React.FC = () => {
                       <Input
                         placeholder="Name"
                         value={userName || formik.values.name}
-                        onChange={(e) => formik.setFieldValue("name", e.target.value)}
+                        onChange={(e) =>
+                          formik.setFieldValue("name", e.target.value)
+                        }
                         onBlur={formik.handleBlur}
                       />
                       <FormErrorMessage>
@@ -201,7 +198,11 @@ const UserProfile: React.FC = () => {
                       >
                         Cancel
                       </Button>
-                      <Button type="submit" colorScheme="blue" onClick={onClose}>
+                      <Button
+                        type="submit"
+                        colorScheme="blue"
+                        onClick={onClose}
+                      >
                         Update
                       </Button>
                     </Flex>
