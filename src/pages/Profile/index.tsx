@@ -5,7 +5,7 @@ import TrufProfile from './TrufProfile'
 
 const Profile: React.FC = () => {
   return (
-    <Flex height='100%'  flexDirection='column' justifyContent='center' alignItems='center'>
+    <Flex height='100%' bg='#F5F5F5'  flexDirection='column' justifyContent='center' alignItems='center' gap={2}>
         <UserProfile/>
         <TrufProfile/>
     </Flex>

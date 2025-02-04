@@ -1,37 +1,67 @@
-import { Box, Button, Flex, Image, Tag } from "@chakra-ui/react";
-import React from "react";
+import { Box, Flex, Image, Tag, useToast } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import axios from "../../../axios/interceptor.ts";
+import EditTurf from "./EditTurf/index.tsx";
+import { getDay } from "@/constants.ts";
 
 const TrufProfile: React.FC = () => {
+  const [turfData, setTurfData] = useState<any>(null);
+  const [refresh, setRefresh] = useState(false);
+  const toast = useToast();
+
+  const fetchtTurfData = async () => {
+    try {
+      const resp = await axios.get("/api/turfprofile");
+      setTurfData(resp?.data);
+      console.log(resp.data);
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchtTurfData();
+  }, [refresh]);
+
   return (
-    <Flex p={5} gap={5} justifyContent="center" align="center">
+    <Flex
+      height="430px"
+      p={5}
+      gap={5}
+      bg="#FFFFFF"
+      justifyContent="center"
+      align="center"
+    >
       <Flex>
         <Image
           width="650px"
           height="400px"
           objectFit="cover"
-          src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+          src={
+            turfData?.turfImage ||
+            "https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+          }
           alt="Caffe Latte"
         />
       </Flex>
-      <Flex width='500px' height='400px' flexDirection="column" gap={6}>
+      <Flex width="500px" height="400px" flexDirection="column" gap={6}>
         <Box fontSize="26px" fontWeight="600">
-          The perfect latte
+          {turfData?.name}
         </Box>
 
-        <Box>
-          Dummy Area Near Dummy Landmark Behind xyz shope. <br />
-          Parbhani - 431401
-        </Box>
+        <Box>{turfData?.address}</Box>
 
         <Box>+91 1234567890</Box>
 
         <Box>
-          <Flex
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="flex-start"
-          >
-            <Flex gap={10}>
+          <Flex flexDirection="column" alignItems="flex-start">
+            <Flex justifyContent="center" alignItems="center" gap={10}>
               <Box fontSize="15px" color="gray">
                 Open At
               </Box>
@@ -39,9 +69,9 @@ const TrufProfile: React.FC = () => {
                 Close At
               </Box>
             </Flex>
-            <Flex gap={10}>
-              <Box>08:00AM</Box>
-              <Box>10:00PM</Box>
+            <Flex justifyContent="center" alignItems="center" gap={10}>
+              <Box marginLeft={2}>{turfData?.openAt}</Box>
+              <Box marginLeft={6}>{turfData?.closeAt}</Box>
             </Flex>
           </Flex>
         </Box>
@@ -50,63 +80,23 @@ const TrufProfile: React.FC = () => {
             Days Open
           </Box>
           <Flex gap={2}>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Mon
-            </Tag>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Tue
-            </Tag>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Wed
-            </Tag>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Thu
-            </Tag>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Fri
-            </Tag>
-            <Tag
-              size="md"
-              variant="solid"
-              colorScheme="green"
-              borderRadius="2px"
-            >
-              Sat
-            </Tag>
-            <Tag size="md" variant="solid" colorScheme="red" borderRadius="2px">
-              Sun
-            </Tag>
+            {turfData?.daysOpen?.sort().map((day: string) => {
+              return (
+                <Tag
+                  key={day}
+                  size="md"
+                  variant="solid"
+                  colorScheme="green"
+                  borderRadius="2px"
+                >
+                  {getDay(day)}
+                </Tag>
+              );
+            })}
           </Flex>
         </Box>
 
-        <Button width="fit-content" variant="outline" colorScheme="blue">
-          Edit Truf Profile
-        </Button>
+        <Flex width="65%">{turfData && <EditTurf turfData={turfData} setRefresh={setRefresh} />}</Flex>
       </Flex>
     </Flex>
   );

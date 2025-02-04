@@ -12,10 +12,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import axios from "../../../axios/interceptor.ts";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [turfName, setTurfName] = useState();
   const toast = useToast();
+  const navigate = useNavigate()
+  
   const fetchTurfDetails = async () => {
     try {
       const resp = await axios.get("/api/turfname");
@@ -66,7 +69,7 @@ const Header: React.FC = () => {
             variant="outline"
           />
           <MenuList>
-            <MenuItem>Profile</MenuItem>
+            <MenuItem onClick={()=>navigate('/profile')}>Profile</MenuItem>
             <MenuItem>Logout</MenuItem>
           </MenuList>
         </Menu>
