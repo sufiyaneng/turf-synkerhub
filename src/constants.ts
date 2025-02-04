@@ -68,7 +68,7 @@ export const signupSchema = Yup.object({
  export  const tabs = [
     {
       label:'Upcoming',
-      value:'UPCOMNG'
+      value:'UPCOMING'
     },
     {
       label:'Previous',
