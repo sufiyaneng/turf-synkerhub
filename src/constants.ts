@@ -64,3 +64,18 @@ export const signupSchema = Yup.object({
       .required("Amount Paid is required")
       .min(0, "Amount Paid must be at least 0"),
   });
+
+ export  const tabs = [
+    {
+      label:'Upcoming',
+      value:'UPCOMING'
+    },
+    {
+      label:'Previous',
+      value:'PREVIOUS'
+    },
+    {
+      label:'Cancelled',
+      value:'CANCELLED'
+    }
+  ]
