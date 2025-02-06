@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import Header from "./Header";
 import Statistics from "./Statistics";
@@ -14,6 +14,8 @@ const Dashboard: React.FC = () => {
     moment().format("DD-MM-YYYY")
   );
   const [searchedByBooker, setSearchedByBooker] = useState<string>("");
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [booking, setBooking] =useState<any>(null)
   return (
     <Flex direction="column">
       <Header />
@@ -24,7 +26,7 @@ const Dashboard: React.FC = () => {
         p={5}
       >
         <Statistics />
-        <CreateEditDrawer />
+        <CreateEditDrawer isOpen={isOpen} onOpen={onOpen} onClose={onClose} booking={booking} isEditable={booking ? true : false} setBooking={setBooking}/>
       </Flex>
       <Toolbar
         type={type}
@@ -34,7 +36,7 @@ const Dashboard: React.FC = () => {
         setSearchedByBooker={setSearchedByBooker}
         searchedByBooker={searchedByBooker}
       />
-      <BookingTable tabType={type} slotDate={slotDate} searchedByBooker={searchedByBooker} />
+      <BookingTable tabType={type} slotDate={slotDate} searchedByBooker={searchedByBooker} onOpen={onOpen}  setBooking={setBooking}/>
     </Flex>
   );
 };

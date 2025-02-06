@@ -3,7 +3,6 @@ import {
   Button,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
@@ -14,7 +13,6 @@ import {
   HStack,
   Input,
   Text,
-  useDisclosure,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -27,6 +25,10 @@ import moment from "moment";
 
 interface CreateEditDrawerProps {
   isEditable?: boolean;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  setBooking: React.Dispatch<React.SetStateAction<any>>;
   booking?: {
     bookerName: string;
     slotDate?: string;
@@ -41,8 +43,11 @@ interface CreateEditDrawerProps {
 const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
   isEditable,
   booking,
+  isOpen,
+  onOpen,
+  onClose,
+  setBooking,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement>(null);
   const [selectedSlot, setSelectedSlot] = useState<any>();
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -57,6 +62,7 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
       slotTime: isEditMode ? booking?.slotTime?.toString() : "1",
       amount: isEditMode ? booking?.amount?.toString() : "",
     },
+    enableReinitialize: true,
     validationSchema: createBookingSchema,
     onSubmit: async (values) => {
       try {
@@ -105,9 +111,13 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
     },
   });
 
-  useEffect(()=>{
-      setSelectedSlot({startTime:booking?.startTime, endTime:booking?.endTime, value:''})
-  },[booking])
+  useEffect(() => {
+    setSelectedSlot({
+      startTime: booking?.startTime,
+      endTime: booking?.endTime,
+      value: "",
+    });
+  }, [booking]);
 
   const checkAvailability = async () => {
     try {
@@ -135,7 +145,7 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
         <DrawerOverlay />
         <DrawerContent>
           <form onSubmit={formik.handleSubmit}>
-            <DrawerCloseButton />
+            {/* <DrawerCloseButton /> */}
             <DrawerHeader>
               {isEditMode ? "Edit Booking" : "Create Booking"}
             </DrawerHeader>
@@ -237,11 +247,18 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
                     </Box>
                   </HStack>
                 </VStack>
-              </Box>  
-              {
-                selectedSlot?.startTime && selectedSlot?.endTime &&  <Box>Selected Slot : {`${moment(selectedSlot.startTime, "HH:mm").format("hh:mm A")} - ${moment(selectedSlot.endTime, "HH:mm").format("hh:mm A")}`}</Box>
-              }
-             
+              </Box>
+              {selectedSlot?.startTime && selectedSlot?.endTime && (
+                <Box>
+                  Selected Slot :{" "}
+                  {`${moment(selectedSlot.startTime, "HH:mm").format(
+                    "hh:mm A"
+                  )} - ${moment(selectedSlot.endTime, "HH:mm").format(
+                    "hh:mm A"
+                  )}`}
+                </Box>
+              )}
+
               {/* Slot Grid */}
               <Box mt={5}>
                 <Flex wrap="wrap" gap={4}>
@@ -251,11 +268,10 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
                         name="radio"
                         key={slot?.label}
                         label={slot?.label}
-                        value={
-                        selectedSlot.value
-                        }
+                        value={selectedSlot.value}
                         checked={
-                          selectedSlot.startTime === slot.startTime && selectedSlot.endTime === slot.endTime
+                          selectedSlot.startTime === slot.startTime &&
+                          selectedSlot.endTime === slot.endTime
                         }
                         onChange={() => {
                           setSelectedSlot(slot);
@@ -268,15 +284,20 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
             </DrawerBody>
 
             <DrawerFooter>
-              <Button variant="outline" mr={3} onClick={onClose}>
+              <Button
+                variant="outline"
+                mr={3}
+                onClick={() => {
+                  setBooking(null);
+                  onClose();
+                }}
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 width="fit-content"
-                isDisabled={
-                  !formik.isValid  || formik.isSubmitting
-                }
+                isDisabled={!formik.isValid || formik.isSubmitting}
                 colorScheme="blue"
               >
                 {isEditMode ? "Update Booking" : "Create Booking"}

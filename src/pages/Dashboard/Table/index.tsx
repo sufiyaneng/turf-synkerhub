@@ -22,14 +22,19 @@ interface BookingTableProps {
   tabType: string;
   slotDate: string;
   searchedByBooker: string;
+  onOpen: ()=>void;
+  setBooking: React.Dispatch<React.SetStateAction<string>>;
+  
 }
 
 const BookingTable: React.FC<BookingTableProps> = ({
   tabType,
   slotDate,
   searchedByBooker,
+  onOpen,setBooking
 }) => {
   const [list, setlist] = useState<any>([]);
+
   const getAllBooking = async () => {
     try {
       const response = await axios.post(`/api/bookings`, {
@@ -103,7 +108,12 @@ const BookingTable: React.FC<BookingTableProps> = ({
                               aria-label="Actions"
                             />
                             <MenuList>
-                              <MenuItem>Update</MenuItem>
+                              <MenuItem onClick={()=>{
+                                setBooking(booking),
+                                onOpen()
+                              }}>
+                                Update
+                              </MenuItem>
                               <MenuItem>Cancel</MenuItem>
                             </MenuList>
                           </Menu>
