@@ -103,3 +103,19 @@ export const signupSchema = Yup.object({
   }
 
   export const days = ['1','2','3','4','5','6','7']
+
+ export  const tabs = [
+    {
+      label:'Upcoming',
+      value:'UPCOMING'
+    },
+    {
+      label:'Previous',
+      value:'PREVIOUS'
+    },
+    {
+      label:'Cancelled',
+      value:'CANCELLED'
+    }
+  ]
+

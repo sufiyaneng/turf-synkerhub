@@ -23,37 +23,79 @@ import RadioButton from "./RadioButton";
 import axios from "../../../axios/interceptor.ts";
 import { useFormik } from "formik";
 import { createBookingSchema } from "@/constants.ts";
-import moment from 'moment'
+import moment from "moment";
 
-const CreateEditDrawer: React.FC = () => {
+interface CreateEditDrawerProps {
+  isEditable?: boolean;
+  booking?: {
+    bookerName: string;
+    slotDate?: string;
+    slotTime?: Number;
+    amount?: Number;
+    startTime?: string;
+    endTime?: string;
+    _id?: string;
+  };
+}
+
+const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
+  isEditable,
+  booking,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef<HTMLButtonElement>(null);
   const [selectedSlot, setSelectedSlot] = useState<any>();
   const [availableSlots, setAvailableSlots] = useState([]);
-
   const toast = useToast();
+  const isEditMode = !!isEditable;
   const formik = useFormik({
     initialValues: {
-      bookerName: "",
-      slotDate:  moment().format('YYYY-MM-DD'),
-      slotTime: "1",
-      amount: "",
+      bookerName: isEditMode ? booking?.bookerName : "",
+      slotDate: isEditMode
+        ? moment(booking?.slotDate).format("YYYY-MM-DD")
+        : moment().format("YYYY-MM-DD"),
+      slotTime: isEditMode ? booking?.slotTime?.toString() : "1",
+      amount: isEditMode ? booking?.amount?.toString() : "",
     },
     validationSchema: createBookingSchema,
     onSubmit: async (values) => {
-      console.log('inside')
       try {
-        await axios.post("/api/createbooking", {...values,amount:Number(values.amount),slotTime:Number(values.slotTime),startTime:selectedSlot?.startTime,endTime:selectedSlot?.endTime});
-        toast({
-          title: "Booking Successful",
-          description: "Your booking has been confirmed!",
-          status: "info",
-          duration: 9000,
-          isClosable: true,
-        });
+        if (isEditMode) {
+          await axios.put(`/api/updatebooking/${booking?._id}`, {
+            ...values,
+            amount: Number(values.amount),
+            slotTime: Number(values.slotTime),
+            startTime: selectedSlot?.startTime,
+            endTime: selectedSlot?.endTime,
+          });
+          toast({
+            title: "Booking Updated",
+            description: "Your booking has been updated successfully!",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          onClose();
+        } else {
+          await axios.post("/api/createbooking", {
+            ...values,
+            amount: Number(values.amount),
+            slotTime: Number(values.slotTime),
+            startTime: selectedSlot?.startTime,
+            endTime: selectedSlot?.endTime,
+          });
+          toast({
+            title: "Booking Successful",
+            description: "Your booking has been confirmed!",
+            status: "info",
+            duration: 9000,
+            isClosable: true,
+          });
+          onClose();
+        }
       } catch (err: any) {
         toast({
-          title: "Booking Failed!",
+          title: isEditMode ? "Update Failed!" : "Booking Failed!",
           description: "Something went wrong!",
           status: "error",
           duration: 9000,
@@ -62,12 +104,16 @@ const CreateEditDrawer: React.FC = () => {
       }
     },
   });
+
+  useEffect(()=>{
+      setSelectedSlot({startTime:booking?.startTime, endTime:booking?.endTime, value:''})
+  },[booking])
+
   const checkAvailability = async () => {
-    
     try {
       const response = await axios.post("/api/check-availability", {
-        slotDate: formik.values.slotDate || '',
-        hours: Number(formik.values.slotTime )|| null,
+        slotDate: formik.values.slotDate || "",
+        hours: Number(formik.values.slotTime) || null,
       });
       setAvailableSlots(response?.data?.slots);
     } catch (err: any) {
@@ -76,7 +122,7 @@ const CreateEditDrawer: React.FC = () => {
   };
   useEffect(() => {
     if (isOpen) checkAvailability();
-  }, [isOpen,formik.values.slotDate, formik.values.slotTime]);
+  }, [isOpen, formik.values.slotDate, formik.values.slotTime]);
   return (
     <>
       <Drawer
@@ -88,12 +134,13 @@ const CreateEditDrawer: React.FC = () => {
       >
         <DrawerOverlay />
         <DrawerContent>
-        <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
+            <DrawerCloseButton />
+            <DrawerHeader>
+              {isEditMode ? "Edit Booking" : "Create Booking"}
+            </DrawerHeader>
 
-          <DrawerCloseButton />
-          <DrawerHeader>Booking</DrawerHeader>
-
-          <DrawerBody>
+            <DrawerBody>
               <Box p={5}>
                 <VStack align="start" spacing={4}>
                   <Box>
@@ -127,7 +174,7 @@ const CreateEditDrawer: React.FC = () => {
                         <Input
                           name="slotDate"
                           type={"date"}
-                          placeholder="2hr"
+                          placeholder="Slot Date"
                           value={formik.values.slotDate}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -145,13 +192,23 @@ const CreateEditDrawer: React.FC = () => {
                         }
                       >
                         <Text fontWeight="bold">Slot Time</Text>
-                        <Input type="number" min={1} max={5}  placeholder="2" value={formik.values.slotTime} name="slotTime"
+                        <Input
+                          type="number"
+                          min={1}
+                          max={5}
+                          placeholder="2"
+                          value={formik.values.slotTime}
+                          name="slotTime"
                           onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}  onKeyDown={(e) => {
-                            if (!["ArrowUp", "ArrowDown", "Tab"].includes(e.key)) {
+                          onBlur={formik.handleBlur}
+                          onKeyDown={(e) => {
+                            if (
+                              !["ArrowUp", "ArrowDown", "Tab"].includes(e.key)
+                            ) {
                               e.preventDefault();
                             }
-                          }}/>
+                          }}
+                        />
                         <FormErrorMessage>
                           {typeof formik.errors.slotTime === "string" &&
                             formik.errors.slotTime}
@@ -161,14 +218,17 @@ const CreateEditDrawer: React.FC = () => {
                     <Box>
                       <FormControl
                         isInvalid={
-                          !!formik.errors.amount &&
-                          formik.touched.amount
+                          !!formik.errors.amount && formik.touched.amount
                         }
                       >
                         <Text fontWeight="bold">Amount Paid</Text>
-                        <Input placeholder="0" value={formik.values.amount} name="amount"
+                        <Input
+                          placeholder="0"
+                          value={formik.values.amount}
+                          name="amount"
                           onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}/>
+                          onBlur={formik.handleBlur}
+                        />
                         <FormErrorMessage>
                           {typeof formik.errors.amount === "string" &&
                             formik.errors.amount}
@@ -177,45 +237,51 @@ const CreateEditDrawer: React.FC = () => {
                     </Box>
                   </HStack>
                 </VStack>
-              </Box>
-          
-            {/* Slot Grid */}
-            <Box mt={5}>
-              <Flex wrap="wrap" gap={4}>
-                {availableSlots?.map((slot: any) => {
-                  return (
-                    <RadioButton
-                    name="radio"
-                    key={slot?.label}
-                    label={slot?.label}
-                    value={slot?.value}
-                    checked={selectedSlot?.value === slot?.value}
-                    onChange={() => {
-                      setSelectedSlot(slot);
-                    }}
-                  />
-                  );
-                })}
-              </Flex>
-            </Box>
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              width="fit-content"
-              isDisabled={
-                !formik.isValid || !formik.dirty || formik.isSubmitting
+              </Box>  
+              {
+                selectedSlot?.startTime && selectedSlot?.endTime &&  <Box>Selected Slot : {`${moment(selectedSlot.startTime, "HH:mm").format("hh:mm A")} - ${moment(selectedSlot.endTime, "HH:mm").format("hh:mm A")}`}</Box>
               }
-              colorScheme="blue"
-            >
-              Create Booking
-            </Button>
-            
-          </DrawerFooter>
+             
+              {/* Slot Grid */}
+              <Box mt={5}>
+                <Flex wrap="wrap" gap={4}>
+                  {availableSlots?.map((slot: any) => {
+                    return (
+                      <RadioButton
+                        name="radio"
+                        key={slot?.label}
+                        label={slot?.label}
+                        value={
+                        selectedSlot.value
+                        }
+                        checked={
+                          selectedSlot.startTime === slot.startTime && selectedSlot.endTime === slot.endTime
+                        }
+                        onChange={() => {
+                          setSelectedSlot(slot);
+                        }}
+                      />
+                    );
+                  })}
+                </Flex>
+              </Box>
+            </DrawerBody>
+
+            <DrawerFooter>
+              <Button variant="outline" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                width="fit-content"
+                isDisabled={
+                  !formik.isValid  || formik.isSubmitting
+                }
+                colorScheme="blue"
+              >
+                {isEditMode ? "Update Booking" : "Create Booking"}
+              </Button>
+            </DrawerFooter>
           </form>
         </DrawerContent>
       </Drawer>
