@@ -27,11 +27,11 @@ const BookingTable: React.FC<BookingTableProps> = ({ tabType }) => {
 
   const getAllBooking = async () => {
     try {
-      const response = await axios.post(`/api/bookings`, {
-        slotDate: "04-02-2025",
+      const resp = await axios.post(`/api/bookings`, {
+        slotDate: "06-02-2025",
         type: tabType,
       });
-      setlist(response?.data)
+      setlist(resp?.data)
     } catch (err: any) {
       console.log(err.message);
     }
@@ -39,6 +39,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ tabType }) => {
   useEffect(() => {
     getAllBooking();
   }, [tabType]);
+  console.log(list,'List')
   return (
     <>
       <Box p={2} bg="gray.100" minH="100vh">

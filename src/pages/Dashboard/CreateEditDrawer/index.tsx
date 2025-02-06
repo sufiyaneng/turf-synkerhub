@@ -285,8 +285,8 @@ const CreateEditDrawer: React.FC<CreateEditDrawerProps> = ({
           </form>
         </DrawerContent>
       </Drawer>
-      <Button ref={btnRef} colorScheme="teal" onClick={onOpen}>
-        Open
+      <Button ref={btnRef} colorScheme="blue" p={5} onClick={onOpen}>
+        Create Booking
       </Button>
     </>
   );

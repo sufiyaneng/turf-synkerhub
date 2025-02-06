@@ -1,4 +1,4 @@
-import { extendTheme } from "@chakra-ui/react";
+import { Box, extendTheme } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -211,5 +211,16 @@ export const CustomRadio = styled.span`
     border-radius: 50%;
   }
 `;
+
+export const SlotBox = styled(Box)`
+  border:1px solid gray;
+  background:white;
+  border-radius:4px;
+  padding:8px;
+  text-align:center;
+  text-wrap:nowrap;
+  min-width:200px;
+  margin:4px;
+`
 
 export default theme;
