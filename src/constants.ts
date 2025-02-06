@@ -65,6 +65,45 @@ export const signupSchema = Yup.object({
       .min(0, "Amount Paid must be at least 0"),
   });
 
+  export const createUserProfileUpdateSchema = Yup.object({
+    name:Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+  })
+
+  export const createTurfProfileUpdateSchema = Yup.object({
+    name:Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters"),
+    address: Yup.string()
+    .required("Address is required")
+    .min(5, "Address must be at least 5 characters"),
+
+  openAt: Yup.string()
+    .required("Opening time is required"),
+
+  closeAt: Yup.string()
+    .required("Closing time is required"),
+
+  // daysOpen: Yup.array()
+  //   .of(Yup.string().oneOf(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]))
+  //   .min(1, "At least one day must be selected")
+  //   .required("Please select at least one day"),
+  })
+
+  export const getDay = (dayNum:string) =>{
+    if(!dayNum) return '-'
+    if(dayNum === '1') return 'Mon';
+    if(dayNum === '2') return 'Tue';
+    if(dayNum === '3') return 'Wed';
+    if(dayNum === '4') return 'Thu';
+    if(dayNum === '5') return 'Fri';
+    if(dayNum === '6') return 'Sat';
+    if(dayNum === '7') return 'Sun';
+  }
+
+  export const days = ['1','2','3','4','5','6','7']
+
  export  const tabs = [
     {
       label:'Upcoming',
@@ -79,3 +118,4 @@ export const signupSchema = Yup.object({
       value:'CANCELLED'
     }
   ]
+
