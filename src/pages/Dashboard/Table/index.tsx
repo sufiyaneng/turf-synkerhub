@@ -13,6 +13,15 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
 } from "@chakra-ui/react";
 import { FiMoreVertical } from "react-icons/fi";
 import axios from "../../../axios/interceptor.ts";
@@ -22,19 +31,24 @@ interface BookingTableProps {
   tabType: string;
   slotDate: string;
   searchedByBooker: string;
-  onOpen: ()=>void;
+  onOpenEdit: () => void;
   setBooking: React.Dispatch<React.SetStateAction<string>>;
-  
 }
 
 const BookingTable: React.FC<BookingTableProps> = ({
   tabType,
   slotDate,
   searchedByBooker,
-  onOpen,setBooking
+  onOpenEdit,
+  setBooking,
 }) => {
   const [list, setlist] = useState<any>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
+    null
+  );
 
+  console.log("cancel id", selectedBookingId);
   const getAllBooking = async () => {
     try {
       const response = await axios.post(`/api/bookings`, {
@@ -49,6 +63,27 @@ const BookingTable: React.FC<BookingTableProps> = ({
   useEffect(() => {
     getAllBooking();
   }, [tabType, slotDate]);
+
+  const cancelBooking = async () => {
+    if (!selectedBookingId) return;
+
+    try {
+      const response = await axios.delete(
+        `/api/deletebooking/${selectedBookingId}`
+      );
+      if (response.status === 200) {
+        setlist(
+          list.filter((booking: any) => booking._id !== selectedBookingId)
+        );
+        onClose();
+      } else {
+        alert("Failed to cancel booking");
+      }
+    } catch (error) {
+      console.error("Error canceling booking:", error);
+    }
+  };
+
   return (
     <>
       <Box p={2} bg="gray.100" minH="100vh">
@@ -108,13 +143,22 @@ const BookingTable: React.FC<BookingTableProps> = ({
                               aria-label="Actions"
                             />
                             <MenuList>
-                              <MenuItem onClick={()=>{
-                                setBooking(booking),
-                                onOpen()
-                              }}>
+                              <MenuItem
+                                onClick={() => {
+                                  setBooking(booking), onOpenEdit();
+                                }}
+                              >
                                 Update
                               </MenuItem>
-                              <MenuItem>Cancel</MenuItem>
+                              {/* <MenuItem onClick={onOpen}>Cancel</MenuItem> */}
+                              <MenuItem
+                                onClick={() => {
+                                  setSelectedBookingId(booking._id);
+                                  onOpen();
+                                }}
+                              >
+                                Cancel
+                              </MenuItem>
                             </MenuList>
                           </Menu>
                         </Td>
@@ -123,6 +167,38 @@ const BookingTable: React.FC<BookingTableProps> = ({
               </Tbody>
             </Table>
           </TableContainer>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Delete Booking</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <p>
+                  {" "}
+                  Are you sure? You are going to delete the booking, which cant
+                  be recover!
+                </p>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  colorScheme="blue"
+                  variant="outline"
+                  mr={3}
+                  onClick={onClose}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="solid"
+                  colorScheme="red"
+                  onClick={cancelBooking}
+                >
+                  Cancel Booking
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Box>
       </Box>
     </>

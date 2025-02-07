@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
         setSearchedByBooker={setSearchedByBooker}
         searchedByBooker={searchedByBooker}
       />
-      <BookingTable tabType={type} slotDate={slotDate} searchedByBooker={searchedByBooker} onOpen={onOpen}  setBooking={setBooking}/>
+      <BookingTable tabType={type} slotDate={slotDate} searchedByBooker={searchedByBooker} onOpenEdit={onOpen}  setBooking={setBooking}/>
     </Flex>
   );
 };
