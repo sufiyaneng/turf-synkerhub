@@ -1,12 +1,15 @@
 import { Tile } from "@/styles";
-import { Box, Flex, useToast } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "../../../axios/interceptor.ts";
+import { MdGroupWork, MdOutlineRadioButtonChecked } from "react-icons/md";
+import { CgMediaLive } from "react-icons/cg";
+import moment from "moment";
 
 const Statistics: React.FC = () => {
   const [bookingData, setBookingData] = useState<any>();
   const toast = useToast();
-
+  console.log(bookingData, "booking data");
   const fetchBookingData = async () => {
     try {
       const resp = await axios.get("/api/statistics");
@@ -59,6 +62,44 @@ const Statistics: React.FC = () => {
             </Box>
           </Flex>
         </Tile>
+        {bookingData?.[3]?.status && (
+          <Tile to="#">
+            <Flex flexDirection="column">
+              <Flex justifyContent={"space-between"} alignItems="center">
+                <HStack>
+                  <Box
+                    width="15px"
+                    height="15px"
+                    borderRadius={50}
+                    backgroundColor="red"
+                  ></Box>
+                  <Text fontSize="3xl" color="tomato">
+                    {bookingData?.[3]?.status || ""}
+                  </Text>
+                </HStack>
+
+                <Text fontSize="md">
+                  {" "}
+                  {moment(bookingData?.[3]?.startTime, "HH:mm").format(
+                    "hh:mm A"
+                  )}
+                </Text>
+                
+                <Text fontSize="md">
+              {"-"}
+                </Text>
+                <Text fontSize="md">
+                  {" "}
+                  {moment(bookingData?.[3]?.endTime, "HH:mm").format("hh:mm A")}
+                </Text>
+              </Flex>
+
+              <Box width="100px" fontSize="10px">
+                {bookingData?.[3]?.bookerName || "N/A"}
+              </Box>
+            </Flex>
+          </Tile>
+        )}
       </Flex>
     </>
   );
