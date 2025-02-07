@@ -1,7 +1,9 @@
 import { Box, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import Tabs from "./Tabs";
+import CheckAvailability from "./CheckAvailability";
 import moment from "moment";
+
 
 const Toolbar: React.FC<{
   type: string;
@@ -11,6 +13,8 @@ const Toolbar: React.FC<{
   slotDate: string;
   searchedByBooker: string;
 }> = (props) => {
+    
+
   return (
     <Flex
       justifyContent={"space-between"}
@@ -21,6 +25,7 @@ const Toolbar: React.FC<{
       <Box display="flex" alignItems="flex-end" alignSelf="flex-end">
         <Tabs type={props.type} setType={props.setType} />
       </Box>
+
 
       <Flex gap={4} p={2}>
         <Stack>
@@ -57,19 +62,11 @@ const Toolbar: React.FC<{
           />
         </Stack>
 
-        {/* <Stack>
-          <Text fontSize="xs">Booking Date</Text>
-          <Input
-            name="bookingDate"
-            size="sm"
-            type={"date"}
-            placeholder="Booking Date"
-            value={""}
-            onChange={() => {
-              ("");
-            }}
-          />
-        </Stack> */}
+
+        <Stack>
+          <CheckAvailability/>
+        </Stack>
+
       </Flex>
     </Flex>
   );

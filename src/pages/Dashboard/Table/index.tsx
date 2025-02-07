@@ -51,18 +51,23 @@ const BookingTable: React.FC<BookingTableProps> = ({
   console.log("cancel id", selectedBookingId);
   const getAllBooking = async () => {
     try {
+
       const response = await axios.post(`/api/bookings`, {
         slotDate: slotDate,
         type: tabType,
       });
       setlist(response?.data);
+
     } catch (err: any) {
       console.log(err.message);
     }
   };
   useEffect(() => {
     getAllBooking();
-  }, [tabType, slotDate]);
+
+  }, [tabType]);
+  console.log(list,'List')
+
 
   const cancelBooking = async () => {
     if (!selectedBookingId) return;
@@ -83,6 +88,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
       console.error("Error canceling booking:", error);
     }
   };
+
 
   return (
     <>
